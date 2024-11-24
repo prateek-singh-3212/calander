@@ -4,7 +4,6 @@ import android.annotation.SuppressLint
 import android.content.Context
 import android.graphics.Color
 import android.util.AttributeSet
-import android.util.Log
 import android.view.GestureDetector
 import android.view.Gravity
 import android.view.LayoutInflater
@@ -12,7 +11,6 @@ import android.view.MotionEvent
 import android.widget.GridLayout
 import android.widget.LinearLayout
 import android.widget.TextView
-import android.widget.Toast
 import androidx.core.view.setMargins
 import com.job.ai.calander.R
 import com.job.ai.calander.databinding.CalendarCardBinding
@@ -29,6 +27,7 @@ import kotlin.math.abs
 
 class CustomCalendarView : LinearLayout {
     private lateinit var calendarCardBinding: CalendarCardBinding
+    private lateinit var gestureDetector: GestureDetector
 
     private val currentCalendar: Calendar by lazy {
         Calendar.getInstance()
@@ -62,6 +61,7 @@ class CustomCalendarView : LinearLayout {
 
     @SuppressLint("ClickableViewAccessibility")
     private fun init(context: Context) {
+        gestureDetector = GestureDetector(context, GestureListener())
         calendarCardBinding = CalendarCardBinding.inflate(
             LayoutInflater.from(context),
             this,
@@ -76,11 +76,16 @@ class CustomCalendarView : LinearLayout {
             updateMonth(1)
         }
 
+        setOnTouchListener { v, event ->
+            gestureDetector.onTouchEvent(event)
+            true
+        }
+
         updateCalendar()
     }
 
     private fun updateMonth(num: Int) {
-        currentCalendar.add(Calendar.MONTH, -1)
+        currentCalendar.add(Calendar.MONTH, num)
         updateCalendar()
     }
 
@@ -193,5 +198,36 @@ class CustomCalendarView : LinearLayout {
             set(Calendar.MONTH, month)
         }
         updateCalendar()
+    }
+
+    private inner class GestureListener : GestureDetector.SimpleOnGestureListener() {
+
+        override fun onFling(
+            e1: MotionEvent?,
+            e2: MotionEvent,
+            velocityX: Float,
+            velocityY: Float
+        ): Boolean {
+            val SWIPE_THRESHOLD = 100
+            val SWIPE_VELOCITY_THRESHOLD = 100
+
+            if (e1 == null) return false
+
+            val diffX = e2.x - e1.x
+            val diffY = e2.y - e1.y
+
+            // Ensure the swipe is horizontal
+            if (abs(diffX) > abs(diffY)) {
+                // Swipe left to go to next month
+                if (abs(diffX) > SWIPE_THRESHOLD && abs(velocityX) > SWIPE_VELOCITY_THRESHOLD) {
+                    if (diffX < 0) {
+                        updateMonth(1)
+                    } else {
+                        updateMonth(-1)
+                    }
+                }
+            }
+            return true
+        }
     }
 }
