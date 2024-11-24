@@ -1,0 +1,40 @@
+<?xml version="1.0" encoding="utf-8"?>
+<navigation xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/login_navigation"
+    app:startDestination="@id/year_fragment">
+    <fragment
+        android:id="@+id/year_fragment"
+        android:name="com.job.ai.calander.ui.frags.YearSelectorFragment"
+        tools:layout="@layout/fragment_year_selector">
+
+        <action
+            android:id="@+id/action_year_fragment_to_date_fragment"
+            app:destination="@id/date_fragment" />
+    </fragment>
+    <fragment
+        android:id="@+id/date_fragment"
+        android:name="com.job.ai.calander.ui.frags.DateSelectorFragment"
+        tools:layout="@layout/fragment_date_selector" >
+
+        <action
+            android:id="@+id/action_date_fragment_to_task_list_fragment"
+            app:destination="@id/task_list_fragment" />
+        <action
+            android:id="@+id/action_date_fragment_to_add_task_fragment"
+            app:destination="@id/add_task_fragment" />
+    </fragment>
+    <fragment
+        android:id="@+id/task_list_fragment"
+        android:name="com.job.ai.calander.ui.frags.TaskListFragment"
+        tools:layout="@layout/fragment_task_list" >
+
+    </fragment>
+    <fragment
+        android:id="@+id/add_task_fragment"
+        android:name="com.job.ai.calander.ui.frags.AddTaskFragment"
+        tools:layout="@layout/fragment_add_task" >
+
+    </fragment>
+</navigation>
