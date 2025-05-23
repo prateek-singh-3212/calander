@@ -7,6 +7,7 @@ import com.job.ai.calander.network.repo.TasksRepo
 import com.job.ai.calander.utils.ApiResult
 import com.job.ai.calander.utils.UIState
 import dagger.hilt.android.lifecycle.HiltViewModel
+import kotlinx.coroutines.CoroutineStart
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.flow.collectLatest
@@ -68,7 +69,7 @@ class CalendarTasksViewModel @Inject constructor(
     }
 
     fun addTask(taskDetails: TaskData.TaskDetails) {
-        viewModelScope.launch {
+        viewModelScope.launch(start = CoroutineStart.LAZY) {
             tasksRepo.storeTask(taskDetails).collectLatest {
                 when (it) {
                     is ApiResult.Failure -> {
